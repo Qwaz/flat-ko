@@ -131,7 +131,11 @@ if ( ! function_exists( 'flat_scripts_styles' ) ) :
 			);
 		}
 
-		wp_enqueue_style( 'flat-fonts', flat_fonts_url(), array(), null ); # Web fonts
+		// wp_enqueue_style( 'flat-fonts', flat_fonts_url(), array(), null ); # Web fonts
+		foreach ( flat_fonts_url() as $key => $url ) {
+			echo "key " . $key . " value " . $url . "\n";
+			wp_enqueue_style( 'flat-fonts-' . $key, $url, array(), null );
+		}
 		wp_enqueue_style( 'flat-theme', get_template_directory_uri() . $assets['css'], array(), $version ); # Flat's styling
 		wp_enqueue_script( 'flat-js', get_template_directory_uri() . $assets['js'], array( 'jquery' ), $version, false ); # Flat's scripting
 		wp_enqueue_style( 'flat-style', get_stylesheet_uri() ); # Load main stylesheet, for child theme supports
@@ -196,18 +200,18 @@ function flat_register_required_plugins()
 		$plugins = array(
 
 			array(
-	 
+
 				'name'      => 'WP Product Review',
-	 
+
 				'slug'      => 'wp-product-review',
-	 
+
 				'required'  => false,
-	 
+
 			)
 
 		);
 
-	 
+
 
 
     $config = array(

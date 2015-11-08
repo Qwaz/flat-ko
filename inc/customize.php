@@ -43,6 +43,7 @@ function flat_customize_register( $wp_customize ) {
 			'Handlee' => 'Handlee',
 			'Lobster' => 'Lobster',
 			'Lobster+Two' => 'Lobster Two',
+			'$Jeju+Hallasan' => '제주 한라산',
 		),
 	) );
 
@@ -76,18 +77,18 @@ function flat_customize_register( $wp_customize ) {
 		'section' => 'title_tagline',
 		'settings' => 'flat_theme_options[favicon]',
 	) ) );
-	
+
 	if ( class_exists( 'WP_Customize_Panel' ) ):
-	
+
 		$wp_customize->add_panel( 'panel_design', array(
 			'priority' => 29,
 			'capability' => 'edit_theme_options',
 			'theme_supports' => '',
 			'title' => __( 'Design', 'flat' )
 		) );
-			
+
 		$wp_customize->get_section('colors')->panel = 'panel_design';
-		
+
 		// Color
 		$wp_customize->add_setting( 'flat_theme_options[sidebar_background_color]', array(
 			'capability' => 'edit_theme_options',
@@ -100,7 +101,7 @@ function flat_customize_register( $wp_customize ) {
 			'section' => 'colors',
 			'settings' => 'flat_theme_options[sidebar_background_color]',
 		) ) );
-		
+
 		$wp_customize->get_section('background_image')->panel = 'panel_design';
 
 		// Background Size
@@ -196,7 +197,7 @@ function flat_customize_register( $wp_customize ) {
 				'News+Cycle' => 'News Cycle',
 			),
 		) );
-	
+
 	else:
 
 		// Color
@@ -304,7 +305,7 @@ function flat_customize_register( $wp_customize ) {
 				'News+Cycle' => 'News Cycle',
 			),
 		) );
-	
+
 	endif;
 
 	// Single Post Settings
@@ -409,7 +410,7 @@ add_action( 'customize_register', 'flat_customize_register' );
  * Sanitize Settings
  */
 function flat_sanitize_site_title_font_family( $site_title_font_family ) {
-	if ( ! in_array( $site_title_font_family, array( 'Amatic+SC', 'Yesteryear', 'Pacifico', 'Dancing+Script', 'Satisfy', 'Handlee', 'Lobster', 'Lobster+Two' ) ) ) {
+	if ( ! in_array( $site_title_font_family, array( 'Amatic+SC', 'Yesteryear', 'Pacifico', 'Dancing+Script', 'Satisfy', 'Handlee', 'Lobster', 'Lobster+Two', '$Jeju+Hallasan' ) ) ) {
 		$site_title_font_family = 'Yesteryear';
 	}
 
@@ -513,6 +514,10 @@ function flat_custom_css() {
 }
 add_action( 'wp_head', 'flat_custom_css' );
 
+function flat_extract_font_name( $font ) {
+	return esc_attr ( str_replace( array ( '+', ':400,700', '$' ), array( ' ', '', '' ), $font ) );
+}
+
 /**
  * Custom Font
  */
@@ -523,24 +528,35 @@ function flat_custom_font() {
 	$sub_heading_font_family = flat_get_theme_option( 'sub_heading_font_family', 'Roboto+Condensed' );
 
 	echo '<style type="text/css">';
-		echo '#masthead .site-title {font-family:' . esc_attr( str_replace( array( '+', ':400,700'), array( ' ', '' ), $site_title_font_family ) ) . '}';
-		echo 'body {font-family:' . esc_attr( str_replace( array( '+', ':400,700'), array( ' ', ' ' ), $global_font_family ) ) . '}';
-		echo 'h1,h2,h3,h4,h5,h6 {font-family:' . esc_attr( str_replace( array( '+', ':400,700'), array( ' ', ' ' ), $heading_font_family ) ) . '}';
-		echo '#masthead .site-description, .hentry .entry-meta {font-family:' . esc_attr( str_replace( array( '+', ':400,700'), array( ' ', ' ' ), $sub_heading_font_family ) ) . '}';
+		echo '#masthead .site-title {font-family:' . flat_extract_font_name( $site_title_font_family ) . '}';
+		echo 'body {font-family:' . flat_extract_font_name( $global_font_family ) . '}';
+		echo 'h1,h2,h3,h4,h5,h6 {font-family:' . flat_extract_font_name( $heading_font_family ) . '}';
+		echo '#masthead .site-description, .hentry .entry-meta {font-family:' . flat_extract_font_name( $sub_heading_font_family ) . '}';
 	echo '</style>';
 }
 add_action( 'wp_head', 'flat_custom_font' );
+
+function flat_handle_font_url( &$urls, &$fonts, $font ) {
+	if ( $font[0] == '$' ) {
+		// Early access
+		$urls[] = '//fonts.googleapis.com/earlyaccess/' . esc_attr( str_replace( '+', '', strtolower( substr( $font, 1) ) ) ) . '.css';
+	} else {
+		$fonts[] = $font;
+	}
+}
 
 /**
  * Get Custom Fonts URL
  */
 function flat_fonts_url() {
+	$urls = array();
+
 	$fonts_url = '';
 	$fonts = array();
-	$fonts[] = flat_get_theme_option( 'site_title_font_family', 'Amatic+SC' );
-	$fonts[] = flat_get_theme_option( 'global_font_family', 'Roboto:400,700' );
-	$fonts[] = flat_get_theme_option( 'heading_font_family', 'Roboto+Slab' );
-	$fonts[] = flat_get_theme_option( 'sub_heading_font_family', 'Roboto+Condensed' );
+	flat_handle_font_url( $urls, $fonts, flat_get_theme_option( 'site_title_font_family', 'Amatic+SC' ) );
+	flat_handle_font_url( $urls, $fonts, flat_get_theme_option( 'global_font_family', 'Roboto:400,700' ) );
+	flat_handle_font_url( $urls, $fonts, flat_get_theme_option( 'heading_font_family', 'Roboto+Slab' ) );
+	flat_handle_font_url( $urls, $fonts, flat_get_theme_option( 'sub_heading_font_family', 'Roboto+Condensed' ) );
 
 	if ( $fonts ) {
 		$fonts_url = add_query_arg( array(
@@ -548,7 +564,9 @@ function flat_fonts_url() {
 		), '//fonts.googleapis.com/css' );
 	}
 
-	return $fonts_url;
+	$urls[] = $fonts_url;
+
+	return $urls;
 }
 
 /**
