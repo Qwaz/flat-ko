@@ -44,6 +44,8 @@ function flat_customize_register( $wp_customize ) {
 			'Lobster' => 'Lobster',
 			'Lobster+Two' => 'Lobster Two',
 			'$Jeju+Hallasan' => '제주 한라산',
+			'$Nanum+Brush+Script' => '나눔손글씨 붓',
+			'$Nanum+Pen+Script' => '나눔손글씨 펜',
 		),
 	) );
 
@@ -149,6 +151,10 @@ function flat_customize_register( $wp_customize ) {
 				'Open+Sans:400,700' => 'Open Sans',
 				'PT+Sans:400,700' => 'PT Sans',
 				'Source+Sans+Pro:400,700' => 'Source Sans Pro',
+				'$Nanum+Gothic' => '나눔고딕',
+				'$Nanum+Myeongjo' => '나눔명조',
+				'$KoPub+Batang' => 'KoPub 바탕',
+				'$Jeju+Myeongjo' => '제주명조',
 			),
 		) );
 
@@ -257,6 +263,10 @@ function flat_customize_register( $wp_customize ) {
 				'Open+Sans:400,700' => 'Open Sans',
 				'PT+Sans:400,700' => 'PT Sans',
 				'Source+Sans+Pro:400,700' => 'Source Sans Pro',
+				'$Nanum+Gothic' => '나눔고딕',
+				'$Nanum+Myeongjo' => '나눔명조',
+				'$KoPub+Batang' => 'KoPub 바탕',
+				'$Jeju+Myeongjo' => '제주명조',
 			),
 		) );
 
@@ -410,7 +420,7 @@ add_action( 'customize_register', 'flat_customize_register' );
  * Sanitize Settings
  */
 function flat_sanitize_site_title_font_family( $site_title_font_family ) {
-	if ( ! in_array( $site_title_font_family, array( 'Amatic+SC', 'Yesteryear', 'Pacifico', 'Dancing+Script', 'Satisfy', 'Handlee', 'Lobster', 'Lobster+Two', '$Jeju+Hallasan' ) ) ) {
+	if ( ! in_array( $site_title_font_family, array( 'Amatic+SC', 'Yesteryear', 'Pacifico', 'Dancing+Script', 'Satisfy', 'Handlee', 'Lobster', 'Lobster+Two', '$Jeju+Hallasan', '$Nanum+Brush+Script', '$Nanum+Pen+Script' ) ) ) {
 		$site_title_font_family = 'Yesteryear';
 	}
 
@@ -418,7 +428,7 @@ function flat_sanitize_site_title_font_family( $site_title_font_family ) {
 }
 
 function flat_sanitize_global_font_family( $global_font_family ) {
-	if ( ! in_array( $global_font_family, array( 'Roboto:400,700', 'Lato:400,700', 'Droid+Sans:400,700', 'Open+Sans:400,700', 'PT+Sans:400,700', 'Source+Sans+Pro:400,700' ) ) ) {
+	if ( ! in_array( $global_font_family, array( 'Roboto:400,700', 'Lato:400,700', 'Droid+Sans:400,700', 'Open+Sans:400,700', 'PT+Sans:400,700', 'Source+Sans+Pro:400,700', '$Nanum+Gothic', '$Nanum+Myeongjo', '$KoPub+Batang', '$Jeju+Myeongjo' ) ) ) {
 		$global_font_family = 'Roboto:400,700';
 	}
 
