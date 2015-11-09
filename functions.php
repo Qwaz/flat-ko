@@ -133,7 +133,7 @@ if ( ! function_exists( 'flat_scripts_styles' ) ) :
 
 		// wp_enqueue_style( 'flat-fonts', flat_fonts_url(), array(), null ); # Web fonts
 		foreach ( flat_fonts_url() as $key => $url ) {
-			echo "key " . $key . " value " . $url . "\n";
+			// echo "key " . $key . " value " . $url . "\n";
 			wp_enqueue_style( 'flat-fonts-' . $key, $url, array(), null );
 		}
 		wp_enqueue_style( 'flat-theme', get_template_directory_uri() . $assets['css'], array(), $version ); # Flat's styling

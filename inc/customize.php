@@ -153,8 +153,10 @@ function flat_customize_register( $wp_customize ) {
 				'Source+Sans+Pro:400,700' => 'Source Sans Pro',
 				'$Nanum+Gothic' => '나눔고딕',
 				'$Nanum+Myeongjo' => '나눔명조',
+				'@Nanum+Barun+Gothic' => '나눔바른고딕',
 				'$KoPub+Batang' => 'KoPub 바탕',
 				'$Jeju+Myeongjo' => '제주명조',
+				'$Noto+Sans+KR' => 'Noto Sans KR',
 			),
 		) );
 
@@ -179,6 +181,10 @@ function flat_customize_register( $wp_customize ) {
 				'PT+Serif' => 'PT Serif',
 				'Rokkitt' => 'Rokkitt',
 				'Open+Sans+Condensed' => 'Open Sans Condensed',
+				'$Nanum+Gothic' => '나눔고딕',
+				'@Nanum+Barun+Gothic' => '나눔바른고딕',
+				'$Jeju+Gothic' => '제주고딕',
+				'$Hanna' => '한나체',
 			),
 		) );
 
@@ -265,8 +271,10 @@ function flat_customize_register( $wp_customize ) {
 				'Source+Sans+Pro:400,700' => 'Source Sans Pro',
 				'$Nanum+Gothic' => '나눔고딕',
 				'$Nanum+Myeongjo' => '나눔명조',
+				'@Nanum+Barun+Gothic' => '나눔바른고딕',
 				'$KoPub+Batang' => 'KoPub 바탕',
 				'$Jeju+Myeongjo' => '제주명조',
+				'$Noto+Sans+KR' => 'Noto Sans KR',
 			),
 		) );
 
@@ -291,6 +299,10 @@ function flat_customize_register( $wp_customize ) {
 				'PT+Serif' => 'PT Serif',
 				'Rokkitt' => 'Rokkitt',
 				'Open+Sans+Condensed' => 'Open Sans Condensed',
+				'$Nanum+Gothic' => '나눔고딕',
+				'@Nanum+Barun+Gothic' => '나눔바른고딕',
+				'$Jeju+Gothic' => '제주고딕',
+				'$Hanna' => '한나체',
 			),
 		) );
 
@@ -428,7 +440,7 @@ function flat_sanitize_site_title_font_family( $site_title_font_family ) {
 }
 
 function flat_sanitize_global_font_family( $global_font_family ) {
-	if ( ! in_array( $global_font_family, array( 'Roboto:400,700', 'Lato:400,700', 'Droid+Sans:400,700', 'Open+Sans:400,700', 'PT+Sans:400,700', 'Source+Sans+Pro:400,700', '$Nanum+Gothic', '$Nanum+Myeongjo', '$KoPub+Batang', '$Jeju+Myeongjo' ) ) ) {
+	if ( ! in_array( $global_font_family, array( 'Roboto:400,700', 'Lato:400,700', 'Droid+Sans:400,700', 'Open+Sans:400,700', 'PT+Sans:400,700', 'Source+Sans+Pro:400,700', '$Nanum+Gothic', '$Nanum+Myeongjo', '@Nanum+Barun+Gothic', '$KoPub+Batang', '$Jeju+Myeongjo', '$Noto+Sans+KR' ) ) ) {
 		$global_font_family = 'Roboto:400,700';
 	}
 
@@ -436,7 +448,7 @@ function flat_sanitize_global_font_family( $global_font_family ) {
 }
 
 function flat_sanitize_heading_font_family( $heading_font_family ) {
-	if ( ! in_array( $heading_font_family, array( 'Roboto+Slab', 'Droid+Serif', 'Lora', 'Bitter', 'Arvo', 'PT+Serif', 'Rokkitt', 'Open+Sans+Condensed' ) ) ) {
+	if ( ! in_array( $heading_font_family, array( 'Roboto+Slab', 'Droid+Serif', 'Lora', 'Bitter', 'Arvo', 'PT+Serif', 'Rokkitt', 'Open+Sans+Condensed', '$Nanum+Gothic', '@Nanum+Barun+Gothic', '$Jeju+Gothic', '$Hanna' ) ) ) {
 		$heading_font_family = 'Roboto+Slab';
 	}
 
@@ -525,7 +537,7 @@ function flat_custom_css() {
 add_action( 'wp_head', 'flat_custom_css' );
 
 function flat_extract_font_name( $font ) {
-	return esc_attr ( str_replace( array ( '+', ':400,700', '$' ), array( ' ', '', '' ), $font ) );
+	return esc_attr ( str_replace( array ( '+', ':400,700', '$', '@' ), array( ' ', '', '', '' ), $font ) );
 }
 
 /**
@@ -547,9 +559,13 @@ function flat_custom_font() {
 add_action( 'wp_head', 'flat_custom_font' );
 
 function flat_handle_font_url( &$urls, &$fonts, $font ) {
-	if ( $font[0] == '$' ) {
+	if ( $font[0] === '$' ) {
 		// Early access
 		$urls[] = '//fonts.googleapis.com/earlyaccess/' . esc_attr( str_replace( '+', '', strtolower( substr( $font, 1) ) ) ) . '.css';
+	} else if ( $font[0] === '@') {
+		if ( $font === '@Nanum+Barun+Gothic' ) {
+			$urls[] = '//cdn.jsdelivr.net/font-nanum/1.0/nanumbarungothic/nanumbarungothic.css';
+		}
 	} else {
 		$fonts[] = $font;
 	}
